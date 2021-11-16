@@ -33,8 +33,11 @@ struct Enemy
 	Texture2D* blueTexture;
 	Texture2D* invertedTexture;
 	int frame;
+	int frameCount;
+	int frameTime;
 	int currentFrameTime;
 	Vector2* position;
+
 };
 
 struct Menu

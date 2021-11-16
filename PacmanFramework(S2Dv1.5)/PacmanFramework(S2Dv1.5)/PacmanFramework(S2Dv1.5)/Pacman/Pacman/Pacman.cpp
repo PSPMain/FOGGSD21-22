@@ -1,5 +1,5 @@
 #include "Pacman.h"
-
+#include<time.h>
 #include <sstream>
 
 Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f),_cPacmanFrameTime(250),_cMunchieFrameTime(500),_ccherryFrameTime(500)
@@ -15,7 +15,9 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f),_
 	for (int i = 0; i < MUNCHIECOUNT; i++)
 	{
 		_munchie[i] = new Enemy();
+		_munchie[i]->frameCount = rand() % 1;
 		_munchie[i]->currentFrameTime = 0;
+		_munchie[i]->frameTime = rand() % 500 + 50;
 	}
 
 	_cherry = new Enemy();
@@ -43,10 +45,17 @@ Pacman::~Pacman()
 	delete _pacman->sourceRect;
 	delete _pacman->position;
 	delete _pacman;
-	delete _munchie->blueTexture;
-	delete _munchie->invertedTexture;
-	delete _munchie->rect;
-	delete _munchie;
+
+	delete _munchie[0]->blueTexture;
+	delete _munchie[0]->invertedTexture;
+	for (int i = 0; i < MUNCHIECOUNT; i++)
+	{
+		delete _munchie[i]->rect;
+		delete _munchie[i]->position;
+		delete _munchie[i];
+	}
+	delete[] _munchie;
+
 	delete _cherry->blueTexture;
 	delete _cherry->invertedTexture;
 	delete _cherry->rect;
@@ -69,13 +78,11 @@ void Pacman::LoadContent()
 	for (int i = 0; i < MUNCHIECOUNT; i++)
 	{
 		_munchie[i]->position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
-		_munchie[i]
+		_munchie[i]->blueTexture = munchieTex;
+		_munchie[i]->invertedTexture = munchieInvertedTex;
+		_munchie[i]->rect = new Rect(100.0f, 450.0f, 12, 12);
 	}
-	_munchie->blueTexture = new Texture2D();
-	_munchie->blueTexture->Load("Textures/Munchie.tga", true);
-	_munchie->invertedTexture = new Texture2D();
-	_munchie->invertedTexture->Load("Textures/MunchieInverted.tga", true);
-	_munchie->rect = new Rect(100.0f, 450.0f, 12, 12);
+
 
 	//load cherry
 	_cherry->blueTexture = new Texture2D();
@@ -246,19 +253,21 @@ void Pacman::Draw(int elapsedTime)
 	SpriteBatch::BeginDraw(); // Starts Drawing
 	SpriteBatch::Draw(_pacman->texture, _pacman->position, _pacman->sourceRect); // Draws Pacman
 
-	if (_frameCount == 0)
+	for (int i = 0; i < MUNCHIECOUNT; i++)
 	{
-		// Draws Red Munchie
-		SpriteBatch::Draw(_munchie->invertedTexture, _munchie->rect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
-		SpriteBatch::Draw(_cherry->invertedTexture, _cherry->rect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+		if (_frameCount == 0)
+		{
+			// Draws Red Munchie
+			SpriteBatch::Draw(_munchie[i]->invertedTexture, _munchie[i]->rect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+			SpriteBatch::Draw(_cherry->invertedTexture, _cherry->rect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+		}
+		else
+		{
+			// Draw Blue Munchie
+			SpriteBatch::Draw(_munchie[i]->blueTexture, _munchie[i]->rect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+			SpriteBatch::Draw(_cherry->blueTexture, _cherry->rect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+		}
 	}
-	else
-	{
-		// Draw Blue Munchie
-		SpriteBatch::Draw(_munchie->blueTexture, _munchie->rect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
-		SpriteBatch::Draw(_cherry->blueTexture, _cherry->rect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
-	}
-	
 
 	// Draws String
 	SpriteBatch::DrawString(stream.str().c_str(), _stringPosition, Color::Green);
