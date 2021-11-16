@@ -25,6 +25,7 @@ struct Player
 	Rect* sourceRect;
 	Texture2D* texture;
 	Vector2* position;
+	
 };
 
 struct Enemy
@@ -37,6 +38,7 @@ struct Enemy
 	int frameTime;
 	int currentFrameTime;
 	Vector2* position;
+	bool rKeyDown;
 
 };
 
@@ -101,7 +103,7 @@ private:
 	Menu* paused;
 	Menu* pKeyDown;
 
-	void Input(int elapsedTime, Input::KeyboardState* State);
+	void Input(int elapsedTime, Input::KeyboardState* State, Input::MouseState* mouseState);
 
 	void CheckPaused(Input::KeyboardState* state, Input::Keys pausedKey);
 	void CheckViewportCollision();

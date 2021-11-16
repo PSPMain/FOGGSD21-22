@@ -11,6 +11,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f),_
 	_pacman-> direction = 0;
 	_pacman-> currentFrameTime = 0;
 	_pacman-> frame = 0;
+	_pacman->speedMultiplyer = 1.0f;
 
 	for (int i = 0; i < MUNCHIECOUNT; i++)
 	{
@@ -22,11 +23,13 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f),_
 
 	_cherry = new Enemy();
 	_cherry->currentFrameTime = 0;
-
+	_cherry ->rKeyDown = false;
 
 	_menu = new Menu();
 	_menu->paused = false;
 	_menu->pKeyDown = false;
+
+	Input::MouseState* mouseState = Input::Mouse::GetState();
 
 	//Initialise important Game aspects
 
@@ -90,6 +93,7 @@ void Pacman::LoadContent()
 	_cherry->invertedTexture = new Texture2D();
 	_cherry->invertedTexture->Load("Textures/CherryInverted.PNG", true);
 	_cherry->rect = new Rect(100.0f, 450.0f, 32, 32);
+	_cherry->position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
 
 	// Set string position
 	_stringPosition = new Vector2(10.0f, 25.0f);
@@ -121,7 +125,7 @@ void Pacman::Update(int elapsedTime)
 	{
 		_frameCount++;
 
-		Input(elapsedTime, keyboardState);
+		Input(elapsedTime, keyboardState, Input::Mouse::GetState());
 		
 		CheckViewportCollision();
 
@@ -134,28 +138,54 @@ void Pacman::Update(int elapsedTime)
 }
 
 
-void Pacman::Input(int elapsedTime, Input::KeyboardState* state)
+void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseState* mouseState)
 {
+	float pacmanSpeed = _cPacmanSpeed * elapsedTime * _pacman->speedMultiplyer;
+
+	Input::KeyboardState* keyboardState = Input::Keyboard::GetState();
+	/*Input::MouseState* mouseState = Input::Mouse::GetState();*/
+
+	if (keyboardState->IsKeyDown(Input::Keys::R))
+	{
+		_cherry->rect = new Rect((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()),32,32);
+	}
+
+	if (keyboardState->IsKeyDown(Input::Keys::LEFTSHIFT))
+	{
+		//apply multiplyer
+		_pacman->speedMultiplyer = 2.0f;
+	}
+	else
+	{
+		_pacman->speedMultiplyer = 1.0f;
+	}
+
 	// Checks if D key is pressed
 	if (state->IsKeyDown(Input::Keys::D))
 	{
-		_pacman->position->X += _cPacmanSpeed * elapsedTime; //Moves Pacman across X axis
+		_pacman->position->X += pacmanSpeed; //Moves Pacman across X axis
 		_pacman->direction = 0;
 	}
 	else if (state->IsKeyDown(Input::Keys::A))
 	{
-		_pacman->position->X -= _cPacmanSpeed * elapsedTime; //Moves Pacman across X axis
+		_pacman->position->X -= pacmanSpeed; //Moves Pacman across X axis
 		_pacman->direction = 2;
 	}
 	else if (state->IsKeyDown(Input::Keys::S))
 	{
-		_pacman->position->Y += _cPacmanSpeed * elapsedTime; //Moves Pacman across Y axis
+		_pacman->position->Y += pacmanSpeed; //Moves Pacman across Y axis
 		_pacman->direction = 1;
 	}
 	else if (state->IsKeyDown(Input::Keys::W))
 	{
-		_pacman->position->Y -= _cPacmanSpeed * elapsedTime; //Moves Pacman across Y axis
+		_pacman->position->Y -= pacmanSpeed; //Moves Pacman across Y axis
 		_pacman->direction = 3;
+	}
+	//handle mouse input-reposition cherry
+	if (mouseState->LeftButton == Input::ButtonState::PRESSED)
+	{
+		_cherry->rect->X = mouseState->X;
+		_cherry->rect->Y = mouseState->Y;
 	}
 }
 
