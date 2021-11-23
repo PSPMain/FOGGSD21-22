@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 ﻿  Pacman.cpp
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\VC\Tools\MSVC\14.28.29910\include\vector(1757,29): warning C4251: 'std::vector<S2D::Input::Keys,std::allocator<S2D::Input::Keys>>::_Mypair': class 'std::_Compressed_pair<std::allocator<S2D::Input::Keys>,std::_Vector_val<std::_Simple_types<_Ty>>,true>' needs to have dll-interface to be used by clients of class 'std::vector<S2D::Input::Keys,std::allocator<S2D::Input::Keys>>'
           with
@@ -37,3 +38,6 @@ C:\Users\s020789l\Documents\GitHub\FOGGSD21-22\PacmanFramework(S2Dv1.5)\PacmanFr
 C:\Users\s020789l\Documents\GitHub\FOGGSD21-22\PacmanFramework(S2Dv1.5)\PacmanFramework(S2Dv1.5)\PacmanFramework(S2Dv1.5)\Pacman\Pacman\Pacman.cpp(286,36): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
 C:\Users\s020789l\Documents\GitHub\FOGGSD21-22\PacmanFramework(S2Dv1.5)\PacmanFramework(S2Dv1.5)\PacmanFramework(S2Dv1.5)\Pacman\Pacman\Pacman.cpp(287,30): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
   Pacman.vcxproj -> C:\Users\s020789l\Documents\GitHub\FOGGSD21-22\PacmanFramework(S2Dv1.5)\PacmanFramework(S2Dv1.5)\PacmanFramework(S2Dv1.5)\Pacman\Debug\Pacman.exe
+=======
+﻿LINK : fatal error LNK1104: cannot open file 'S2D.lib'
+>>>>>>> Stashed changes
