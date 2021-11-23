@@ -1,4 +1,5 @@
 #define MUNCHIECOUNT 50
+#define GHOSTCOUNT 1
 #pragma once
 
 // If Windows and not in Debug, this will run without a console window
@@ -18,6 +19,7 @@ using namespace S2D;
 
 struct Player
 {
+	bool dead;
 	float speedMultiplyer;
 	int currentFrameTime;
 	int direction;
@@ -40,6 +42,15 @@ struct Enemy
 	Vector2* position;
 	bool rKeyDown;
 
+};
+
+struct movingEnemy
+{
+	Vector2* position;
+	Texture2D* texture;
+	Rect* sourceRect;
+	int direction;
+	float speed;
 };
 
 struct Menu
@@ -81,6 +92,8 @@ private:
 	//Enemy* currentFrameTime;
 	const int _cMunchieFrameTime;
 
+	movingEnemy* _ghosts[GHOSTCOUNT];
+
 	Enemy* _cherry;
 	const int _ccherryFrameTime;
 
@@ -102,6 +115,9 @@ private:
 	Menu* started;
 	Menu* paused;
 	Menu* pKeyDown;
+
+	void CheckGhostCollisions();
+	void UpdateGhost(movingEnemy* ghost, int elapsedTime);
 
 	void Input(int elapsedTime, Input::KeyboardState* State, Input::MouseState* mouseState);
 

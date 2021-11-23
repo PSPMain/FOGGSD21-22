@@ -8,6 +8,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f),_
 	_frameCount = 0;
 
 	_pacman = new Player();
+	_pacman->dead = false;
 	_pacman-> direction = 0;
 	_pacman-> currentFrameTime = 0;
 	_pacman-> frame = 0;
@@ -20,6 +21,10 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f),_
 		_munchie[i]->currentFrameTime = 0;
 		_munchie[i]->frameTime = rand() % 500 + 50;
 	}
+
+	_ghosts[0] = new movingEnemy();
+	_ghosts[0]->direction = 0;
+	_ghosts[0]->speed = 0.2f;
 
 	_cherry = new Enemy();
 	_cherry->currentFrameTime = 0;
@@ -63,6 +68,13 @@ Pacman::~Pacman()
 	delete _cherry->invertedTexture;
 	delete _cherry->rect;
 	delete _cherry;
+
+	delete _ghosts[0]->texture;
+	delete _ghosts[0]->position;
+	delete _ghosts[0]->sourceRect;
+	delete _ghosts[0]->texture;
+	delete _ghosts[0];
+	delete[] _ghosts;
 }
 
 void Pacman::LoadContent()
@@ -73,9 +85,15 @@ void Pacman::LoadContent()
 	_pacman->position = new Vector2(350.0f, 350.0f);
 	_pacman->sourceRect = new Rect(0.0f, 0.0f, 32, 32);
 
+	// Load Ghost
+	_ghosts[0]->texture = new Texture2D();
+	_ghosts[0]->texture->Load("Textures/GhostBlue1.png", false);
+	_ghosts[0]->position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
+	_ghosts[0]->sourceRect = new Rect(0.0f, 0.0f, 32, 32);
+
 	// Load Munchie
 	Texture2D* munchieTex = new Texture2D();
-	munchieTex->Load("Textures/Munchie.png", false);
+	munchieTex->Load("Textures/Munchie.tga", false);
 	Texture2D* munchieInvertedTex = new Texture2D();
 	munchieInvertedTex->Load("Textures/MunchieInverted.tga", false);
 	for (int i = 0; i < MUNCHIECOUNT; i++)
@@ -110,6 +128,7 @@ void Pacman::Update(int elapsedTime)
 {
 	// Gets the current state of the keyboard
 	Input::KeyboardState* keyboardState = Input::Keyboard::GetState();
+	_frameCount++;
 
 	if (!started)
 	{
@@ -123,7 +142,7 @@ void Pacman::Update(int elapsedTime)
 
 	if (!paused)
 	{
-		_frameCount++;
+		/*_frameCount++;*/
 
 		Input(elapsedTime, keyboardState, Input::Mouse::GetState());
 		
@@ -134,6 +153,9 @@ void Pacman::Update(int elapsedTime)
 		UpdateMunchie(elapsedTime);
 		
 		UpdateCherry(elapsedTime);
+
+		UpdateGhost(_ghosts[0], elapsedTime);
+		CheckGhostCollisions();
 	}
 }
 
@@ -244,6 +266,54 @@ void Pacman::UpdatePacman(int elapsedTime)
 	}
 }
 
+void Pacman::CheckGhostCollisions()
+{
+	int i = 0;
+	int bottom1 = _pacman->position->Y + _pacman->sourceRect->Height;
+	int bottom2 = 0;
+	int left1 = _pacman->position->X;
+	int left2 = 0;
+	int right1 = _pacman->position->X + _pacman->sourceRect->Width;
+	int right2 = 0;
+	int top1 = _pacman->position->Y;
+	int top2 = 0;
+
+	for (i = 0; i < GHOSTCOUNT; i++)
+	{
+		//populate variables with Ghost data
+		bottom2 = _ghosts[i]->position->Y + _ghosts[i]->sourceRect->Height;
+		left2 = _ghosts[i] -> position->X;
+		right2 = _ghosts[i]->position->X + _ghosts[i]->sourceRect->Width;
+		top2 = _ghosts[i]->position->Y;
+
+		if ((bottom1 > top2) && (top1 < bottom2) && (right1 > left2) && (left1 < right2))
+		{
+			_pacman->dead = true;
+			i = GHOSTCOUNT;
+		}
+	}
+}
+
+void Pacman::UpdateGhost(movingEnemy* ghost, int elapsedTime)
+{
+	if (ghost->direction == 0)
+	{
+		ghost->position->X += ghost->speed * elapsedTime;
+	}
+	else if (ghost->direction == 1)
+	{
+		ghost->position->X -= ghost->speed * elapsedTime;
+	}
+	if (ghost->position->X + ghost->sourceRect->Width >= Graphics::GetViewportWidth())
+	{
+		ghost->direction = 1;
+	}
+	else if (ghost->position->X <= 0)
+	{
+		ghost->direction = 0;
+	}
+}
+
 void Pacman::UpdateMunchie(int elapsedTime)
 {
 	//_munchie->currentFrameTime += elapsedTime;
@@ -281,7 +351,12 @@ void Pacman::Draw(int elapsedTime)
 	stream << "Pacman X: " << _pacman->position->X << " Y: " << _pacman->position->Y;
 
 	SpriteBatch::BeginDraw(); // Starts Drawing
-	SpriteBatch::Draw(_pacman->texture, _pacman->position, _pacman->sourceRect); // Draws Pacman
+	if (!_pacman->dead)
+	{
+		SpriteBatch::Draw(_pacman->texture, _pacman->position, _pacman->sourceRect); // Draws Pacman
+	}
+
+	SpriteBatch::Draw(_ghosts[0]->texture, _ghosts[0] -> position, _ghosts[0]->sourceRect);
 
 	for (int i = 0; i < MUNCHIECOUNT; i++)
 	{
