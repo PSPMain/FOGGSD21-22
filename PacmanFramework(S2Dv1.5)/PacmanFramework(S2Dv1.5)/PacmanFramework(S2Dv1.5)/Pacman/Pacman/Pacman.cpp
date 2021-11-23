@@ -22,9 +22,12 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f),_
 		_munchie[i]->frameTime = rand() % 500 + 50;
 	}
 
-	_ghosts[0] = new movingEnemy();
-	_ghosts[0]->direction = 0;
-	_ghosts[0]->speed = 0.2f;
+	for (int i = 0; i < GHOSTCOUNT; i++)
+	{
+		_ghosts[i] = new movingEnemy();
+		_ghosts[i]->direction = 0;
+		_ghosts[i]->speed = 0.2f;
+	}
 
 	_cherry = new Enemy();
 	_cherry->currentFrameTime = 0;
@@ -69,11 +72,14 @@ Pacman::~Pacman()
 	delete _cherry->rect;
 	delete _cherry;
 
+	for (int i = 0; i < GHOSTCOUNT; i++)
+	{
+		delete _ghosts[i]->position;
+		delete _ghosts[i]->sourceRect;
+		delete _ghosts[i]->texture;
+		delete _ghosts[i];
+	}
 	delete _ghosts[0]->texture;
-	delete _ghosts[0]->position;
-	delete _ghosts[0]->sourceRect;
-	delete _ghosts[0]->texture;
-	delete _ghosts[0];
 	delete[] _ghosts;
 }
 
@@ -86,10 +92,14 @@ void Pacman::LoadContent()
 	_pacman->sourceRect = new Rect(0.0f, 0.0f, 32, 32);
 
 	// Load Ghost
-	_ghosts[0]->texture = new Texture2D();
-	_ghosts[0]->texture->Load("Textures/GhostBlue1.png", false);
-	_ghosts[0]->position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
-	_ghosts[0]->sourceRect = new Rect(0.0f, 0.0f, 32, 32);
+	Texture2D* ghostTex = new Texture2D();
+	ghostTex->Load("Textures/GhostBlue1.png", false);
+	for (int i = 0; i < GHOSTCOUNT; i++)
+	{
+		_ghosts[i]->texture = ghostTex;
+		_ghosts[i]->position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
+		_ghosts[i]->sourceRect = new Rect(0.0f, 0.0f, 32, 32);
+	} 
 
 	// Load Munchie
 	Texture2D* munchieTex = new Texture2D();
@@ -154,7 +164,10 @@ void Pacman::Update(int elapsedTime)
 		
 		UpdateCherry(elapsedTime);
 
-		UpdateGhost(_ghosts[0], elapsedTime);
+		for (int i = 0; i < GHOSTCOUNT; i++)
+		{
+			UpdateGhost(_ghosts[i], elapsedTime);
+		}
 		CheckGhostCollisions();
 	}
 }
@@ -312,6 +325,8 @@ void Pacman::UpdateGhost(movingEnemy* ghost, int elapsedTime)
 	{
 		ghost->direction = 0;
 	}
+	ghost->sourceRect->X = ghost->sourceRect->Width * ghost->direction;
+	
 }
 
 void Pacman::UpdateMunchie(int elapsedTime)
@@ -356,7 +371,10 @@ void Pacman::Draw(int elapsedTime)
 		SpriteBatch::Draw(_pacman->texture, _pacman->position, _pacman->sourceRect); // Draws Pacman
 	}
 
-	SpriteBatch::Draw(_ghosts[0]->texture, _ghosts[0] -> position, _ghosts[0]->sourceRect);
+	for (int i = 0; i < GHOSTCOUNT; i++)
+	{
+		SpriteBatch::Draw(_ghosts[i]->texture, _ghosts[i]->position, _ghosts[i]->sourceRect);
+	}
 
 	for (int i = 0; i < MUNCHIECOUNT; i++)
 	{

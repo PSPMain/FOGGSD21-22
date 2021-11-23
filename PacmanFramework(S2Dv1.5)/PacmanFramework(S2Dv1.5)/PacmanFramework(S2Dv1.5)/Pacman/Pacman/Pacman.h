@@ -1,5 +1,5 @@
 #define MUNCHIECOUNT 50
-#define GHOSTCOUNT 1
+#define GHOSTCOUNT 4
 #pragma once
 
 // If Windows and not in Debug, this will run without a console window
