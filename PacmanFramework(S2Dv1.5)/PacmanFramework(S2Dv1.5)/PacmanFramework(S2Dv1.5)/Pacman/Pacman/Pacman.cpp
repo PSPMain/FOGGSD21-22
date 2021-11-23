@@ -50,6 +50,7 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f),_
 
 }
 
+
 Pacman::~Pacman()
 {
 	delete _pacman->texture;
@@ -82,6 +83,7 @@ Pacman::~Pacman()
 	delete _ghosts[0]->texture;
 	delete[] _ghosts;
 }
+
 
 void Pacman::LoadContent()
 {
@@ -224,6 +226,7 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseSta
 	}
 }
 
+
 void Pacman::CheckPaused(Input::KeyboardState* state, Input::Keys pausedKey)
 {
 	//checks is the p key is pressed
@@ -237,6 +240,7 @@ void Pacman::CheckPaused(Input::KeyboardState* state, Input::Keys pausedKey)
 		_menu->pKeyDown = false;
 	}
 }
+
 
 void Pacman::CheckViewportCollision()
 {
@@ -260,6 +264,7 @@ void Pacman::CheckViewportCollision()
 	}
 }
 
+
 void Pacman::UpdatePacman(int elapsedTime)
 {
 	_pacman->currentFrameTime += elapsedTime;
@@ -278,6 +283,7 @@ void Pacman::UpdatePacman(int elapsedTime)
 
 	}
 }
+
 
 void Pacman::CheckGhostCollisions()
 {
@@ -307,6 +313,7 @@ void Pacman::CheckGhostCollisions()
 	}
 }
 
+
 void Pacman::UpdateGhost(movingEnemy* ghost, int elapsedTime)
 {
 	if (ghost->direction == 0)
@@ -329,6 +336,7 @@ void Pacman::UpdateGhost(movingEnemy* ghost, int elapsedTime)
 	
 }
 
+
 void Pacman::UpdateMunchie(int elapsedTime)
 {
 	//_munchie->currentFrameTime += elapsedTime;
@@ -344,6 +352,7 @@ void Pacman::UpdateMunchie(int elapsedTime)
 	//}
 }
 
+
 void Pacman::UpdateCherry(int elapsedTime)
 {
 	_cherry->currentFrameTime += elapsedTime;
@@ -357,6 +366,7 @@ void Pacman::UpdateCherry(int elapsedTime)
 		_cherry->currentFrameTime = 0;
 	}
 }
+
 
 void Pacman::Draw(int elapsedTime)
 {
