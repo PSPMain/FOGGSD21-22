@@ -4,6 +4,7 @@
 
 // If Windows and not in Debug, this will run without a console window
 // You can use this to output information when debugging using cout or cerr
+
 #ifdef WIN32 
 	#ifndef _DEBUG
 		#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
@@ -115,6 +116,11 @@ private:
 	Menu* started;
 	Menu* paused;
 	Menu* pKeyDown;
+
+	SoundEffect* _pop;
+	
+
+	bool CollisionCheck(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2);
 
 	void CheckGhostCollisions();
 	void UpdateGhost(movingEnemy* ghost, int elapsedTime);

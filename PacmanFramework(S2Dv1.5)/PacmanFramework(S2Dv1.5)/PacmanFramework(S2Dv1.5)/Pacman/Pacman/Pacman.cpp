@@ -1,11 +1,13 @@
 #include "Pacman.h"
-#include<time.h>
+#include <time.h>
 #include <sstream>
+#include <iostream>
 
 Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f),_cPacmanFrameTime(250),_cMunchieFrameTime(500),_ccherryFrameTime(500)
 {
-
 	_frameCount = 0;
+
+	_pop = new SoundEffect();
 
 	_pacman = new Player();
 	_pacman->dead = false;
@@ -41,13 +43,13 @@ Pacman::Pacman(int argc, char* argv[]) : Game(argc, argv), _cPacmanSpeed(0.1f),_
 
 	//Initialise important Game aspects
 
-	Graphics::Initialise(argc, argv, this, 1024, 768, false, 25, 25, "Pacman", 60);
-
+	Audio::Initialise();
+	Graphics::Initialise(argc, argv, this, 1024, 768, false, 25, 25, "pacman", 60);
 	Input::Initialise();
 
 	// Start the Game Loop - This calls Update and Draw in game loop 
 	Graphics::StartGameLoop();
-
+	
 }
 
 
@@ -82,6 +84,8 @@ Pacman::~Pacman()
 	}
 	delete _ghosts[0]->texture;
 	delete[] _ghosts;
+
+	delete _pop;
 }
 
 
@@ -110,9 +114,9 @@ void Pacman::LoadContent()
 	munchieInvertedTex->Load("Textures/MunchieInverted.tga", false);
 	for (int i = 0; i < MUNCHIECOUNT; i++)
 	{
-		_munchie[i]->position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
 		_munchie[i]->blueTexture = munchieTex;
 		_munchie[i]->invertedTexture = munchieInvertedTex;
+		_munchie[i]->position = new Vector2((rand() % Graphics::GetViewportWidth()), (rand() % Graphics::GetViewportHeight()));
 		_munchie[i]->rect = new Rect(100.0f, 450.0f, 12, 12);
 	}
 
@@ -133,6 +137,8 @@ void Pacman::LoadContent()
 	background->Load("Textures/Transparency.png", false);
 	rectangle = new Rect(0.0f, 0.0f, Graphics::GetViewportWidth(), Graphics::GetViewportHeight());
 	stringPosition = new Vector2(Graphics::GetViewportWidth() / 2.0f, Graphics::GetViewportHeight() / 2.0f);
+
+	_pop->Load("Sounds/pop.wav");
 }
 
 
@@ -148,6 +154,17 @@ void Pacman::Update(int elapsedTime)
 		{
 			_menu->started = true;
 		}
+	}
+	
+	//Audio::Play(_pop);
+
+	if (!Audio::IsInitialised())
+	{
+		std::cout << "Audio is not initialised" << std::endl;
+	}
+	if (!_pop->IsLoaded())
+	{
+		std::cout << "_pop member sound effect has not loaded" << std::endl;
 	}
 
 	CheckPaused(keyboardState, Input::Keys::P);
@@ -171,6 +188,14 @@ void Pacman::Update(int elapsedTime)
 			UpdateGhost(_ghosts[i], elapsedTime);
 		}
 		CheckGhostCollisions();
+
+		for (int i = 0; i < MUNCHIECOUNT; i++)
+		{
+			if (CollisionCheck(_pacman->position->X, _pacman->position->Y, _pacman->sourceRect->Width, _pacman->sourceRect->Height, _munchie[i]->position->X, _munchie[i]->position->Y, _munchie[i]->rect->Width, _munchie[i]->rect->Height))
+			{
+				Audio::Play(_pop);
+			}
+		}
 	}
 }
 
@@ -223,6 +248,23 @@ void Pacman::Input(int elapsedTime, Input::KeyboardState* state, Input::MouseSta
 	{
 		_cherry->rect->X = mouseState->X;
 		_cherry->rect->Y = mouseState->Y;
+	}
+}
+
+
+bool Pacman::CollisionCheck(int x1, int y1, int width1, int height1, int x2, int y2, int width2, int height2)
+{
+	int left1 = x1;
+	int left2 = x2;
+	int right1 = x1 + width1;
+	int right2 = x2 + width2;
+	int top1 = y1;
+	int top2 = y2;
+	int bottom1 = y1 + height1;
+	int bottom2 = y2 + height2;
+	if (left1==left2||right1==right2||top1==top2||bottom1==bottom2)
+	{
+		return true;
 	}
 }
 
