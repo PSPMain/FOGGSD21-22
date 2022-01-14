@@ -430,16 +430,16 @@ void Pacman::Draw(int elapsedTime)
 
 	for (int i = 0; i < MUNCHIECOUNT; i++)
 	{
-		if (_frameCount == 0)
+		if (_munchie[i]->frameCount == 0)
 		{
 			// Draws Red Munchie
-			SpriteBatch::Draw(_munchie[i]->invertedTexture, _munchie[i]->rect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+			SpriteBatch::Draw(_munchie[i]->invertedTexture, _munchie[i]->position, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
 			SpriteBatch::Draw(_cherry->invertedTexture, _cherry->rect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
 		}
 		else
 		{
 			// Draw Blue Munchie
-			SpriteBatch::Draw(_munchie[i]->blueTexture, _munchie[i]->rect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
+			SpriteBatch::Draw(_munchie[i]->blueTexture, _munchie[i]->position, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
 			SpriteBatch::Draw(_cherry->blueTexture, _cherry->rect, nullptr, Vector2::Zero, 1.0f, 0.0f, Color::White, SpriteEffect::NONE);
 		}
 	}
