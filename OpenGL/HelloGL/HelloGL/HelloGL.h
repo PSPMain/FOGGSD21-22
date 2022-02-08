@@ -4,6 +4,8 @@
 #include <gl/GLU.h>
 #include "GL/freeglut.h"
 #include "GLUTCallbacks.h"
+#define REFRESHRATE 16
+
 class HelloGL
 {
 public:
@@ -14,5 +16,8 @@ public:
 	void DrawScaleneTriangle();
 	void DrawIsocelesTriangle();
 	void DrawEqualateralTriangle();
+	void update();
+private:
+	float rotation;
 };
 

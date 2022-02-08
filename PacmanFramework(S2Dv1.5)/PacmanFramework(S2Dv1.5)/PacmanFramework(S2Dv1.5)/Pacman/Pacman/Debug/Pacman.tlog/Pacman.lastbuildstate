@@ -1,2 +1,2 @@
-#TargetFrameworkVersion=v4.0:PlatformToolSet=v142:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=10.0
-Debug|Win32|C:\Users\Joel\OneDrive - Staffordshire University\Documents\GitHub\FOGGSD21-22\PacmanFramework(S2Dv1.5)\PacmanFramework(S2Dv1.5)\PacmanFramework(S2Dv1.5)\Pacman\|
+PlatformToolSet=v142:VCToolArchitecture=Native32Bit:VCToolsVersion=14.28.29910:VCServicingVersionCompilers=14.28.29915:TargetPlatformVersion=10.0.19041.0:
+Debug|Win32|C:\Users\s020789l\Documents\GitHub\FOGGSD21-22\PacmanFramework(S2Dv1.5)\PacmanFramework(S2Dv1.5)\PacmanFramework(S2Dv1.5)\Pacman\|
