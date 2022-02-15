@@ -17,6 +17,7 @@ public:
 	void DrawIsocelesTriangle();
 	void DrawEqualateralTriangle();
 	void update();
+	void Keyboard(unsigned char key, int x, int y);
 private:
 	float rotation;
 };
