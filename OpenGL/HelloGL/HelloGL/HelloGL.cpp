@@ -2,6 +2,10 @@
 
 HelloGL::HelloGL(int argc, char* argv[])
 	{
+		camera = new Camera();
+		camera->eye.x = 0.0f; camera->eye.y = 0.0f; camera->eye.z = 1.0f;
+		camera->center.x = 0.0f; camera->center.y = 0.0f; camera->center.z = 0.0f;
+		camera->up.x = 0.0f; camera->up.y = 1.0f; camera->up.z = 0.0f;
 		rotation = 0.0f;
 		GLUTCallbacks::Init(this);
 		glutInit(&argc,argv);
@@ -12,13 +16,18 @@ HelloGL::HelloGL(int argc, char* argv[])
 		glutDisplayFunc(GLUTCallbacks::Display);
 		glutTimerFunc(REFRESHRATE, GLUTCallbacks::Timer, REFRESHRATE);
 		glutKeyboardFunc(GLUTCallbacks::Keyboard);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glViewport(0, 0, 800, 800);
+		gluPerspective(45, 1, 0, 100);
+		glMatrixMode(GL_MODELVIEW);
 		glutMainLoop();
 	}
 
 void HelloGL::DrawPolygon()
 {
 	glPushMatrix();
-	glRotatef(rotation, 0.0f, 0.0f, -1.0f);
+	glRotatef(rotation, 1.0f, 0.0f, 0.0f);
 	glBegin(GL_POLYGON);//this starts to draw a polygon
 	{
 		glColor4f(1.0f, 0.0f, 0.0f, 0.0f);
@@ -74,6 +83,9 @@ void HelloGL::DrawEqualateralTriangle()
 
 void HelloGL::update()
 {
+	glLoadIdentity();
+	gluLookAt(camera->eye.x, camera->eye.y, camera->eye.z, camera->center.x, camera->center.y, camera->center.z, camera->up.x, camera->up.y, camera->up.z);
+	glTranslatef(0.0f, 0.0f, -5.0f);
 	if (rotation >= 360.0f)
 	{
 		rotation = 0.0f;
@@ -91,15 +103,23 @@ void HelloGL::Keyboard(unsigned char key, int x, int y)
 	{
 		rotation -= 0.5f;
 	}
+	else if (key == 'up')
+	{
+		
+	}
 }
 
 void HelloGL::Display()
 {
 	glClear(GL_COLOR_BUFFER_BIT);//this clears the scene
-	DrawPolygon();
+	/*DrawPolygon();*/
 	//DrawScaleneTriangle();
 	//DrawIsocelesTriangle();
 	//DrawEqualateralTriangle();
+	glPushMatrix();
+	glRotatef(rotation, 1.0f, 0.0f, 0.0f);
+	glutWireTeapot(1);
+	glPopMatrix();
 	glFlush();//flushes the scene drawn to the graphics card
 	glutSwapBuffers();
 }
