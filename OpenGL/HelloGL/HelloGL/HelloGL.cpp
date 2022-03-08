@@ -1,5 +1,8 @@
 #include "HelloGL.h"
 
+#include <iostream>
+using namespace std;
+
 HelloGL::HelloGL(int argc, char* argv[])
 	{
 		camera = new Camera();
@@ -95,18 +98,39 @@ void HelloGL::update()
 
 void HelloGL::Keyboard(unsigned char key, int x, int y)
 {
-	if (key == 'd')
+	//if (key == 'd')
+	//{
+	//	rotation += 0.5f;
+	//}
+	//else if (key == 'a')
+	//{
+	//	rotation -= 0.5f;
+	//}
+	//else if (key == 's')
+	//{
+	//	camera->eye.z += 0.1f;
+	//}
+	//else if (key == 'w')
+	//{
+	//	camera->eye.z -= 0.1f;
+	//}
+	if (key == GLUT_KEY_UP)
 	{
-		rotation += 0.5f;
+		std::cout << "Melon" << endl;
+		camera->eye.y += 0.5f;
 	}
-	else if (key == 'a')
-	{
-		rotation -= 0.5f;
-	}
-	else if (key == 'up')
-	{
-		
-	}
+	//else if (key == GLUT_KEY_DOWN)
+	//{
+	//	camera->eye.y -= 0.5f;
+	//}
+	//else if (key == GLUT_KEY_RIGHT)
+	//{
+	//	camera->eye.x += 0.5f;
+	//}
+	//else if (key == GLUT_KEY_LEFT)
+	//{
+	//	camera->eye.x -= 0.5f;
+	//}
 }
 
 void HelloGL::Display()
@@ -117,7 +141,7 @@ void HelloGL::Display()
 	//DrawIsocelesTriangle();
 	//DrawEqualateralTriangle();
 	glPushMatrix();
-	glRotatef(rotation, 1.0f, 0.0f, 0.0f);
+	glRotatef(rotation, 1.0f, 1.0f, 0.0f);
 	glutWireTeapot(1);
 	glPopMatrix();
 	glFlush();//flushes the scene drawn to the graphics card
